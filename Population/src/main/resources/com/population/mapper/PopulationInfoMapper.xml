@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.population.mapper.PopulationInfoMapper">
+        <insert id="insertPopulationInfo">
+            INSERT INTO population_info
+                ( conzoneName, routeName, shareRatio, speed, stdDate, trafficAmount)
+                VALUES(#{conzoneName}, #{routeName}, #{shareRatio}, #{speed}, #{stdDate}, #{trafficAmount});
+        </insert>
+        <select id="selectPopulationByDate" resultType="com.population.vo.PopulationInfoVO">
+            select routeName, count(*) as cnt from population_info group by routeName ;
+        </select>
+
+
+        <insert id="insertCongestInfo">
+            INSERT INTO congestion_info
+            (conzoneName, grade, routeName, routeNo, shareRatio, speed, stdDate, stdHour, timeAvg, trafficAmount)
+            VALUES(#{conzoneName}, #{grade}, #{routeName}, #{routeNo}, #{shareRatio}, #{speed}, #{stdDate}, #{stdHour}, #{timeAvg}, #{trafficAmount});
+            
+        </insert>
+        <select id="selectCongestInfoByDate" resultType="com.population.vo.CongestInfoVO">
+            select routeName , avg(trafficAmount) as amount, avg(timeAvg) time, avg(speed) as speedAvg from
+            congestion_info group by routeName ;
+        </select>
+    </mapper>

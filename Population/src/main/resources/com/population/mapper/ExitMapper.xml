@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.population.mapper.ExitMapper">
+    <insert id="insertExitInfo">
+        INSERT INTO population_info.exit_info
+        (icName, routeName, routeNo, xValue, yValue)
+        VALUES(#{icName}, #{routeName}, #{routeNo}, #{xValue}, #{yValue});
+    </insert>
+    <select id="selectExitByDate" resultType="com.population.vo.ExitInfoVO">
+        select icName ,routeName, xValue, yValue from exit_info group by icName ;
+    </select>
+    <select id="selectExitNameByDate" resultType="com.population.vo.ExitInfoVO">
+        select * from exit_info where routeName   = #{routeName}
+    </select>
+</mapper>
