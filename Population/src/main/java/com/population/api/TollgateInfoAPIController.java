@@ -8,10 +8,11 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.population.service.ExitInfoService;
-import com.population.vo.ExitInfoVO;
+import com.population.service.TollgateInfoService;
+import com.population.vo.TollgateInfoVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,12 +21,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+
 @RestController
-public class ExitAPIController {
+public class TollgateInfoAPIController {
     @Autowired
-    ExitInfoService service;
-    @GetMapping("/api/exit")
-    public Map<String, Object> getExitInfo() throws Exception {
+    TollgateInfoService service;
+    @GetMapping("/api/toll/list")
+    public Map<String, Object> getTollgateInfo() throws Exception {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         StringBuilder urlBuilder = new StringBuilder("http://data.ex.co.kr/openapi/locationinfo/locationinfoIc"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("key","UTF-8") + "=8078659211"); /*Service Key*/
@@ -38,7 +40,7 @@ public class ExitAPIController {
         Document doc = dBuilder.parse(urlBuilder.toString());
 
         doc.getDocumentElement().normalize();
-        System.out.println(doc.getDocumentElement().getNodeName());
+        // System.out.println(doc.getDocumentElement().getNodeName());
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("list");
         // System.out.println("데이터 수 : "+nList.getLength());
@@ -58,34 +60,48 @@ public class ExitAPIController {
 
         
         
-            ExitInfoVO vo = new ExitInfoVO();
+            TollgateInfoVO vo = new TollgateInfoVO();
             vo.setIcName(icName);
             vo.setRouteName(routeName);
             vo.setRouteNo(routeNo);
             vo.setXValue(xValue);
             vo.setYValue(yValue);
             
-            service.insertExitInfo(vo);
+            service.insertTollgateInfo(vo);
         }
         resultMap.put("status", true);
         resultMap.put("message", "데이터가 입력되었습니다.");
         return resultMap;
-        
+    
     }
-    @GetMapping("/api/exit/info")
-    public Map<String, Object> getExitInfoByDate() {
+    public static String getTagValue(String tag, Element elem) {
+        if(elem.getElementsByTagName(tag).item(0)==null) return null;
+        NodeList nlList = elem.getElementsByTagName(tag).item(0).getChildNodes();
+        if(nlList == null) return null;
+        Node node = (Node) nlList.item(0);
+        if(node == null) return null;
+        return node.getNodeValue();
+    }
+    
+    @GetMapping("/api/toll")
+    public Map<String, Object> getrouteNameAll(String routeName, String icName){
+        Map<String, Object> resulMap = new LinkedHashMap<String, Object>();
+            List<TollgateInfoVO> list =  service.selectRouteAndIC(routeName, icName);
+            resulMap.put("list", list);
+            return resulMap;
+    }
+    @GetMapping("/api/icnames")
+    public Map<String, Object> getIcNames(@RequestParam @Nullable String route) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        List<ExitInfoVO> list = service.selectExitByDate();
-        resultMap.put("status", true);
+        if(route == null || route.equals("") || route.equals("undefined")) {
+            route = "all";
+        }
+        List<TollgateInfoVO> list = service.selectIcNames(route);
         resultMap.put("list", list);
         return resultMap;
     }
-    public static String getTagValue(String tag, Element elem) {
-    if(elem.getElementsByTagName(tag).item(0)==null) return null;
-    NodeList nlList = elem.getElementsByTagName(tag).item(0).getChildNodes();
-    if(nlList == null) return null;
-    Node node = (Node) nlList.item(0);
-    if(node == null) return null;
-    return node.getNodeValue();
-}
+    @GetMapping("/api/routenames")
+    public List<TollgateInfoVO> getRouteNames() {
+        return service.selectRouteNames();
+    }
 }

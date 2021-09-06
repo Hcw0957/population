@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.population.mapper.SmsHistoryMapper">
+        <insert id="insertSmsHistoryInfo">
+            INSERT INTO population_info.accident_failure
+        (burstStateNm, burstTypeCd, content, route, `section`, upDownType, oDate, oTime)
+        VALUES(#{burstStateNm}, #{burstTypeCd}, #{content}, #{route}, `#{section}`, #{upDownType}, #{oDate}, #{oTime});
+        </insert>
+    </mapper>

@@ -4,11 +4,12 @@
     <mapper namespace="com.population.mapper.PopulationInfoMapper">
         <insert id="insertPopulationInfo">
             INSERT INTO population_info
-                ( conzoneName, routeName, shareRatio, speed, stdDate, trafficAmount)
-                VALUES(#{conzoneName}, #{routeName}, #{shareRatio}, #{speed}, #{stdDate}, #{trafficAmount});
+                ( conzoneName, routeName, shareRatio, speed, stdDate, trafficAmout)
+                VALUES(#{conzoneName}, #{routeName}, #{shareRatio}, #{speed}, #{stdDate}, #{trafficAmout});
         </insert>
-        <select id="selectPopulationByDate" resultType="com.population.vo.PopulationInfoVO">
-            select routeName, count(*) as cnt from population_info group by routeName ;
+
+        <select id="selectTotleTrafficAmount" resultType="com.population.vo.PopulationInfoVO">
+            select sum(trafficAmout) as totalTrafficAmout, routeName from population_info group by routeName;
         </select>
 
 

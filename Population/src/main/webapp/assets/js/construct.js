@@ -1,7 +1,7 @@
 $(function () {
     $("#continent_select").change(function(){
         let continent = $("#continent_select").find("option:selected").val()
-        console.log(continent)
+        // console.log(continent)
         getInternationalInfo(continent)
     })
     getInternationalInfo("시공")
@@ -10,7 +10,7 @@ $(function () {
             type:"get",
             url: "/api/construt?sigong="+continent,
             success: function (r) {
-                console.log(r);
+                // console.log(r);
                 $(".country_table tbody").html("")
                 if (r.data != null) {
                     for (let i = 0; i < r.data.length; i++) {

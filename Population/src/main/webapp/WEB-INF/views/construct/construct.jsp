@@ -22,23 +22,22 @@
                     <option value="준공">준공</option>
                 </select>
             </div>
-            <table class="country_table">
-                <thead>
+            <thead>
+                    <table class="country_table">
                     <tr>
                         <td>공사 현황</td>
                         <td>공사시점 주소</td>
                         <td>공사종점 주소</td>
-                        <td>공사기간</td>
-                        <td>준공날짜</td>
-                        <td>노선명</td>
-                        <td>준공날짜</td>
+                        <td>공사 기간</td>
+                        <td>준공 날짜</td>
+                        <td>노선 명</td>
+                        <td>공사 노선</td>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
         </div>
-
     </div>
 </body>
 

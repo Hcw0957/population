@@ -1,24 +1,27 @@
 package com.population.api;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
 
+import com.population.service.RestingService;
+import com.population.vo.RestingVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.population.service.ConstructionInfoService;
+import com.population.service.PopulationService;
+import com.population.service.TrafficService;
+import com.population.vo.TrafficVO;
 
-import com.population.vo.ConstructionInfoVO;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,16 +29,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 @RestController
-public class ConstructionInfoAPIController {
+public class RestingAPIController {
     @Autowired
-    ConstructionInfoService service;
-    @GetMapping("/api/gest")
-    public Map<String, Object> getConstructionInfo(
+    RestingService service;
+    @GetMapping("/api/rest")
+    public Map<String, Object> getRestingInfo(
     ) throws Exception {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        StringBuilder urlBuilder = new StringBuilder("http://data.ex.co.kr/openapi/safeDriving/hiwayCnstnPrss"); /*URL*/
+        StringBuilder urlBuilder = new StringBuilder("http://data.ex.co.kr/openapi/business/serviceAreaRoute"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("key","UTF-8") + "=8078659211"); /*Service Key*/
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("100000", "UTF-8")); /*한 페이지 결과 수*/
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
+        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*한 페이지 결과 수*/
         urlBuilder.append("&" + URLEncoder.encode("type","UTF-8") + "=" + URLEncoder.encode("xml", "UTF-8")); /*페이지번호*/
         // System.out.println(urlBuilder.toString());
 
@@ -56,40 +60,49 @@ public class ConstructionInfoAPIController {
         for(int i=0; i<nList.getLength(); i++) {
             Node n = nList.item(i);
             Element elem = (Element)n;
-            String cmcnCstrClss = getTagValue("cmcnCstrClss", elem);
-            String cnstnStpntAddr = getTagValue("cnstnStpntAddr", elem);
-            String cnstnEnpntAddr = getTagValue("cnstnEnpntAddr", elem);
-            String cnstnTerm = getTagValue("cnstnTerm", elem);
-            String cmcnDate = getTagValue("cmcnDate", elem);
+            String batchMenu = getTagValue("batchMenu", elem);
+            String brand = getTagValue("brand", elem);
+            String convenience = getTagValue("convenience", elem);
+            String direction = getTagValue("direction", elem);
             String routeName = getTagValue("routeName", elem);
-            String sectionName = getTagValue("sectionName", elem);
-        
+            String serviceAreaName = getTagValue("serviceAreaName", elem);
+            String svarAddr = getTagValue("svarAddr", elem);
+            String telNo = getTagValue("telNo", elem);
             
-            ConstructionInfoVO vo = new ConstructionInfoVO();
-
-            vo.setCmcnCstrClss(cmcnCstrClss);
-            vo.setCnstnStpntAddr(cnstnStpntAddr);
-            vo.setCnstnEnpntAddr(cnstnEnpntAddr);
-            vo.setCnstnTerm(cnstnTerm);
-            vo.setCmcnDate(cmcnDate);
+            
+            RestingVO vo = new RestingVO();
+            vo.setBatchMenu(batchMenu);
+            vo.setBrand(brand);
+            vo.setConvenience(convenience);
+            vo.setDirection(direction);
             vo.setRouteName(routeName);
-            vo.setSectionName(sectionName);
-            
-            service.insertConstructionInfo(vo);
+            vo.setServiceAreaName(serviceAreaName);
+            vo.setSvarAddr(svarAddr);
+            vo.setTelNo(telNo);
+
+
+            service.insertRestingInfo(vo);
         }
         resultMap.put("status", true);
         resultMap.put("message", "데이터가 입력되었습니다.");
         return resultMap;
         
     }
-    @GetMapping("/api/construt")
-    public Map<String, Object> getConstructionInfo(@RequestParam String sigong) {
+    @GetMapping("/api/resting")
+    public Map<String, Object> getRestingList() {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        List<ConstructionInfoVO> list = service.selectConstructionInfoByDate(sigong);
-        System.out.println(list);
+        List<RestingVO> list = service.selectRestingList();
         resultMap.put("status", true);
         resultMap.put("data", list);
-    
+        
+        return resultMap;
+    }
+    @GetMapping("/api/restingsearch")
+    public Map<String, Object> getRestingSearch(@RequestParam String region){
+        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        region = region+"%";
+        List<RestingVO> list = service.selectRestingPlace(region);
+        resultMap.put("data", list);
         return resultMap;
     }
 

@@ -12,13 +12,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import com.population.service.PopulationService;
 import com.population.vo.CongestInfoVO;
-import com.population.vo.ConstructionInfoVO;
 import com.population.vo.PopulationInfoVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,7 +29,7 @@ import org.w3c.dom.NodeList;
 public class MainAPIController {
     @Autowired
     PopulationService service;
-    @GetMapping("/api/population")
+    @GetMapping("/api/populat")
     public Map<String, Object> getPopulation(
     ) throws Exception {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
@@ -45,10 +43,10 @@ public class MainAPIController {
         Document doc = dBuilder.parse(urlBuilder.toString());
 
         doc.getDocumentElement().normalize();
-        System.out.println(doc.getDocumentElement().getNodeName());
+        // System.out.println(doc.getDocumentElement().getNodeName());
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("list");
-        System.out.println("데이터 수 : "+nList.getLength());
+        // System.out.println("데이터 수 : "+nList.getLength());
         if(nList.getLength() <= 0){
             resultMap.put("status", false);
             resultMap.put("message", "데이터가 없습니다.");
@@ -62,7 +60,7 @@ public class MainAPIController {
             String shareRatio = getTagValue("shareRatio", elem);
             String speed = getTagValue("speed", elem);
             String stdDate = getTagValue("stdDate", elem);
-            String trafficAmount = getTagValue("trafficAmout", elem);
+            String trafficAmout = getTagValue("trafficAmout", elem);
             
             PopulationInfoVO vo = new PopulationInfoVO();
             Date Dt = new Date();
@@ -73,7 +71,7 @@ public class MainAPIController {
             vo.setShareRatio(shareRatio);
             vo.setSpeed(speed);
             vo.setStdDate(stdDate);
-            vo.setTrafficAmount(trafficAmount);
+            vo.setTrafficAmout(trafficAmout);
 
 
             Date dt = new Date();
@@ -88,32 +86,21 @@ public class MainAPIController {
         return resultMap;
         
     }
-    @GetMapping("/api/road/{date}")
-    public Map<String, Object> getPopulationInfo(
-        @PathVariable String date
-    ) {
+    @GetMapping("/api/road")
+    public Map<String, Object> getTotleTrafficAmount(){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        if(date.equals("today")) {
-            Date now = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-            String strNow = formatter.format(now);
-            List<PopulationInfoVO> list = service.selectPopulationByDate(strNow);
-            resultMap.put("status", true);
-            resultMap.put("data", list);
-            return resultMap;
-        }
-        List<PopulationInfoVO> list = service.selectPopulationByDate(date);
-        resultMap.put("status", true);
-        resultMap.put("data", list);
-        
+        List<PopulationInfoVO> list = service.selectTotleTrafficAmount();
+        resultMap.put("list", list);
         return resultMap;
+
     }
+
 
     @GetMapping("/api/con")
     public Map<String, Object> getCongestion(
     ) throws Exception {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        StringBuilder urlBuilder = new StringBuilder("http://data.ex.co.kr/openapi/odtraffic/trafficAmountByRealtime"); /*URL*/
+        StringBuilder urlBuilder = new StringBuilder("http://data.ex.co.kr/openapi/odtraffic/trafficAmountByCongest"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("key","UTF-8") + "=8078659211"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("type","UTF-8") + "=" + URLEncoder.encode("xml", "UTF-8")); /*페이지번호*/
         // System.out.println(urlBuilder.toString());
@@ -123,10 +110,10 @@ public class MainAPIController {
         Document doc = dBuilder.parse(urlBuilder.toString());
 
         doc.getDocumentElement().normalize();
-        System.out.println(doc.getDocumentElement().getNodeName());
+        // System.out.println(doc.getDocumentElement().getNodeName());
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("list");
-        System.out.println("데이터 수 : "+nList.getLength());
+        // System.out.println("데이터 수 : "+nList.getLength());
         if(nList.getLength() <= 0){
             resultMap.put("status", false);
             resultMap.put("message", "데이터가 없습니다.");
@@ -144,7 +131,8 @@ public class MainAPIController {
             String stdDate = getTagValue("stdDate", elem);
             String stdHour = getTagValue("stdHour", elem);
             String timeAvg = getTagValue("timeAvg", elem);
-            String trafficAmount = getTagValue("trafficAmout", elem); // 오타
+            String trafficAmount = getTagValue("trafficAmout", elem); 
+            
             
             CongestInfoVO vo = new CongestInfoVO();
             Date Dt = new Date();

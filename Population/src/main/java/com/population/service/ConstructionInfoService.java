@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ConstructionInfoService {
-    @Autowired // 이거 빠짐
+    @Autowired
     ConstructionInfoMapper mapper;
     public void insertConstructionInfo(ConstructionInfoVO vo){
         mapper.insertConstructionInfo(vo);

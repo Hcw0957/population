@@ -11,7 +11,8 @@ public class PopulationInfoVO {
     private String shareRatio;
     private String speed;
     private String stdDate;
-    private String trafficAmount;
+    private String trafficAmout;
     private Integer cnt;
 
+    private String totalTrafficAmout;
 }

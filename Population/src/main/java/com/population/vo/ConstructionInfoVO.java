@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ConstructionInfoVO {
+    private Integer seq;
     private String cmcnCstrClss;    //준공시공구분
     private String cnstnStpntAddr;  //공사시점주소
     private String cnstnEnpntAddr;  //공사종점주소

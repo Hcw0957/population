@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.population.mapper.TrafficMapper">
+        <insert id="insertTrafficInfo">
+            INSERT INTO population_info.traffic_info
+            (sumTm, trafficAmout, exDivName)
+            VALUES(#{sumTm}, #{trafficAmout}, #{exDivName});
+        </insert>
+        <select id="selectTrafficSector" resultType="com.population.vo.TrafficVO">
+            select sum(trafficAmout) as amount from traffic_info where exDivName = '민자' group by sumTm order by today desc limit 1
+        </select>
+        <select id="selectTrafficGong" resultType="com.population.vo.TrafficVO">
+            select sum(trafficAmout) as amount from traffic_info where exDivName = '도공' group by sumTm order by today desc limit 1
+        </select>
+
+    </mapper>

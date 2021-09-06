@@ -22,7 +22,7 @@
 }
 .dashboard_content { padding:10px; font-size: 0;}
 .dashboard_content > div {display: inline-block; vertical-align: top;}
-.content_left {width: 40%; height: 1500px; margin-left: 20px;}
+.content_left {width: 650px; height:280px; margin-left: 20px;}
 
 .content_left {background-color: #fff; border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.2); 

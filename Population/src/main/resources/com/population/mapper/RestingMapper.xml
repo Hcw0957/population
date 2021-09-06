@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.population.mapper.RestingMapper">
+        <insert id="insertRestingInfo">
+            INSERT INTO resting_info
+            (batchMenu, brand, convenience, direction, routeName, serviceAreaName, svarAddr, telNo)
+            VALUES(#{batchMenu}, #{brand}, #{convenience}, #{direction}, #{routeName}, #{serviceAreaName}, #{svarAddr}, #{telNo});
+        </insert>
+        <select id="selectRestingList" resultType="com.population.vo.RestingVO">
+            select * from resting_info
+        </select>
+        <select id="selectRestingPlace" resultType="com.population.vo.RestingVO">
+            select * from resting_info where serviceAreaName like #{region}
+        </select>
+    </mapper>

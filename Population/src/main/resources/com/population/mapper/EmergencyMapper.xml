@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.population.mapper.EmergencyMapper">
+    <insert id="insertEmergencyinfo">
+        INSERT INTO population_info.emergency_info
+        (bgwdIc, drveDrctNm, frwdIc, routeNm, shift, bypsRoad)
+        VALUES(#{bgwdIc}, #{drveDrctNm}, #{frwdIc}, #{routeNm}, #{shift}, #{bypsRoad});
+    </insert>
+    <select id="selectEmergencyList" resultType="com.population.vo.EmergencyVO">
+        <if test = "routeNm != 'all'">
+        select * from emergency_info where routeNm = #{routeNm} 
+        </if>
+        <if test = "routeNm == 'all'">
+            select * from emergency_info
+        </if>
+    </select>
+    <select id="selectEmer" resultType="com.population.vo.EmergencyVO">
+        select * from emergency_info where  frwdIc like #{frwdIc}
+    </select>
+
+</mapper>

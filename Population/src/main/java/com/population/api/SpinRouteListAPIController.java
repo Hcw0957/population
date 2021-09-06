@@ -2,6 +2,7 @@ package com.population.api;
 
 import org.springframework.web.bind.annotation.RestController;
 
+
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,10 +13,10 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.population.service.ConstructionInfoService;
-
-import com.population.vo.ConstructionInfoVO;
-
+import com.population.service.SpinRouteListService;
+import com.population.service.TimeSmsService;
+import com.population.vo.SpinRouteListVO;
+import com.population.vo.TimeSmsVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,18 +25,18 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 @RestController
-public class ConstructionInfoAPIController {
+public class SpinRouteListAPIController {
     @Autowired
-    ConstructionInfoService service;
-    @GetMapping("/api/gest")
-    public Map<String, Object> getConstructionInfo(
+    SpinRouteListService service;
+    @GetMapping("/api/spin")
+    public Map<String, Object> getSpinRouteListInfo(
     ) throws Exception {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        StringBuilder urlBuilder = new StringBuilder("http://data.ex.co.kr/openapi/safeDriving/hiwayCnstnPrss"); /*URL*/
+        StringBuilder urlBuilder = new StringBuilder("http://data.ex.co.kr/openapi/roadEtcInfo/spinRouteList"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("key","UTF-8") + "=8078659211"); /*Service Key*/
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("100000", "UTF-8")); /*한 페이지 결과 수*/
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
+        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*한 페이지 결과 수*/
         urlBuilder.append("&" + URLEncoder.encode("type","UTF-8") + "=" + URLEncoder.encode("xml", "UTF-8")); /*페이지번호*/
         // System.out.println(urlBuilder.toString());
 
@@ -56,40 +57,36 @@ public class ConstructionInfoAPIController {
         for(int i=0; i<nList.getLength(); i++) {
             Node n = nList.item(i);
             Element elem = (Element)n;
-            String cmcnCstrClss = getTagValue("cmcnCstrClss", elem);
-            String cnstnStpntAddr = getTagValue("cnstnStpntAddr", elem);
-            String cnstnEnpntAddr = getTagValue("cnstnEnpntAddr", elem);
-            String cnstnTerm = getTagValue("cnstnTerm", elem);
-            String cmcnDate = getTagValue("cmcnDate", elem);
-            String routeName = getTagValue("routeName", elem);
-            String sectionName = getTagValue("sectionName", elem);
-        
+            String edpntDstnc = getTagValue("edpntDstnc", elem);
+            String routeNm = getTagValue("routeNm", elem);
+            String routeNo = getTagValue("routeNo", elem);
+            String stptDstnc = getTagValue("stptDstnc", elem);
+            String totExtnsDstne = getTagValue("totExtnsDstne", elem);
+            String useYn = getTagValue("useYn", elem);
             
-            ConstructionInfoVO vo = new ConstructionInfoVO();
+            SpinRouteListVO vo = new SpinRouteListVO();
+            vo.setEdpntDstnc(edpntDstnc);
+            vo.setRouteNm(routeNm);
+            vo.setRouteNo(routeNo);
+            vo.setStptDstnc(stptDstnc);
+            vo.setTotExtnsDstne(totExtnsDstne);
+            vo.setUseYn(useYn);
 
-            vo.setCmcnCstrClss(cmcnCstrClss);
-            vo.setCnstnStpntAddr(cnstnStpntAddr);
-            vo.setCnstnEnpntAddr(cnstnEnpntAddr);
-            vo.setCnstnTerm(cnstnTerm);
-            vo.setCmcnDate(cmcnDate);
-            vo.setRouteName(routeName);
-            vo.setSectionName(sectionName);
-            
-            service.insertConstructionInfo(vo);
+            service.insertSpinRouteList(vo);
         }
         resultMap.put("status", true);
         resultMap.put("message", "데이터가 입력되었습니다.");
         return resultMap;
         
     }
-    @GetMapping("/api/construt")
-    public Map<String, Object> getConstructionInfo(@RequestParam String sigong) {
+    @GetMapping("/api/route")
+    public Map<String, Object> getSpinRouteListInfo(@RequestParam String list) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        List<ConstructionInfoVO> list = service.selectConstructionInfoByDate(sigong);
-        System.out.println(list);
+        list = "%"+list+"%";
+        List<SpinRouteListVO> data = service.selectSpinRouteListbyData(list);
         resultMap.put("status", true);
-        resultMap.put("data", list);
-    
+        resultMap.put("data", data);
+        
         return resultMap;
     }
 
@@ -102,3 +99,4 @@ public class ConstructionInfoAPIController {
         return node.getNodeValue();
     }
 }
+

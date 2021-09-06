@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.population.mapper.SpinRouteListMapper">
+        <insert id="insertSpinRouteList">
+            INSERT INTO population_info.spinroute_list
+            (edpntDstnc, routeNm, routeNo, stptDstnc, totExtnsDstne, useYn)
+            VALUES(#{edpntDstnc}, #{routeNm}, #{routeNo}, #{stptDstnc}, #{totExtnsDstne}, #{useYn});
+        </insert>
+        <select id="selectSpinRouteListbyData" resultType="com.population.vo.SpinRouteListVO">
+            <if test="list == 'all'">
+                select * from spinroute_list
+            </if>
+            <if test = "list != 'all'">
+                select * from spinroute_list where routeNm like #{list}
+            </if>
+        </select>
+        <select id="selectRouteAllName" resultType="java.lang.String">
+            select routeNm from spinroute_list 
+        </select>
+    </mapper> 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.population.mapper.TollgateInfoMapper">
+        <insert id="insertTollgateInfo">
+            INSERT INTO tollgate_info
+            (icName, routeName, routeNo, xValue, yValue)
+            VALUES(#{icName}, #{routeName}, #{routeNo}, #{xValue}, #{yValue});
+        </insert>
+        <select id="selectTollgateInfoByDate" resultType="com.population.vo.TollgateInfoVO">
+            select icName ,routeName, xValue, yValue from exit_info group by icName ;
+        </select>
+        <!-- ic가져오기 -->
+        <select id="selectIcNames" resultType="com.population.vo.TollgateInfoVO">
+            select distinct icName, xValue, yValue from tollgate_info
+            <if test="route != 'all'">
+                where routeName = #{route}
+            </if>
+        </select>
+        <select id="selectRouteNames" resultType="com.population.vo.TollgateInfoVO">
+            select distinct routeName from tollgate_info
+            
+        </select>
+        <select id="selectRouteAndIC" resultType="com.population.vo.TollgateInfoVO">
+            select * from tollgate_info where routeName = #{routeName} and icName = #{icName} limit 1;
+        </select>
+<!--         
+        <select id="selectExitNameByRouteName" resultType="com.population.vo.ExitInfoVO">
+            <if test='routeName != null'>
+                select * from tollgate_info where routeName = #{routeName}
+            </if>
+            <if test='routeName == null'>
+                select * from tollgate_info
+            </if>
+            
+        </select> -->
+    </mapper>
