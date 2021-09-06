@@ -8,10 +8,10 @@
             VALUES(#{sumTm}, #{trafficAmout}, #{exDivName});
         </insert>
         <select id="selectTrafficSector" resultType="com.population.vo.TrafficVO">
-            select sum(trafficAmout) as amount from traffic_info where exDivName = '민자' group by sumTm order by today desc limit 1
+            select sum(trafficAmout) as amount, sumTm, exDivName, today from traffic_info where exDivName ='민자' group by today order by today desc limit 1
         </select>
         <select id="selectTrafficGong" resultType="com.population.vo.TrafficVO">
-            select sum(trafficAmout) as amount from traffic_info where exDivName = '도공' group by sumTm order by today desc limit 1
+            select sum(trafficAmout) as amount, sumTm, exDivName, today from traffic_info where exDivName ='도공' group by today order by today desc limit 1
         </select>
 
     </mapper>
